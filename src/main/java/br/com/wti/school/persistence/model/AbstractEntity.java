@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.Data;
 
 /**
- * @author Washington Antunes for DevDojo on 19/03/23.
+ * @author Washington Antunes for wTI on 19/03/23.
  */
 @MappedSuperclass
 @Data

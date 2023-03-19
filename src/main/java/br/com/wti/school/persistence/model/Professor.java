@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Washington Antunes for DevDojo on 19/03/23.
+ * @author Washington Antunes for wTI on 19/03/23.
  */
 @Getter
 @Setter
