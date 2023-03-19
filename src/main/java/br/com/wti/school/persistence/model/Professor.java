@@ -16,7 +16,9 @@ import lombok.Setter;
 @Entity
 public class Professor extends AbstractEntity {
 	
-    @NotEmpty(message = "The field name cannot be empty")
+	private static final long serialVersionUID = 4824987199632653694L;
+
+	@NotEmpty(message = "The field name cannot be empty")
     private String name;
     
     @Email(message = "This email is not valid")

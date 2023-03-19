@@ -16,7 +16,9 @@ import lombok.Setter;
 @Entity
 public class ApplicationUser extends AbstractEntity {
 	
-    @NotEmpty(message = "The field username cannot be empty")
+	private static final long serialVersionUID = -8298010984383607318L;
+
+	@NotEmpty(message = "The field username cannot be empty")
     @Column(unique = true)
     private String username;
     
