@@ -1,5 +1,6 @@
 package br.com.wti.school.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,12 +15,12 @@ import br.com.wti.school.security.service.CustomUserDetailsService;
 /**
  * @author Washington Antunes for wTI on 19/03/23.
  */
-@SuppressWarnings("deprecation")
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomUserDetailsService customUserDetailsService;
 
+	@Autowired
 	public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
 		this.customUserDetailsService = customUserDetailsService;
 	}

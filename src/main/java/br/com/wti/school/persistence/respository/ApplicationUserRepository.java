@@ -1,4 +1,4 @@
-package br.com.wti.school.security.service;
+package br.com.wti.school.persistence.respository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

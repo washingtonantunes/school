@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import br.com.wti.school.persistence.model.ApplicationUser;
+import br.com.wti.school.persistence.respository.ApplicationUserRepository;
 
 /**
  * @author Washington Antunes for wTI on 19/03/23.
@@ -21,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private final ApplicationUserRepository applicationUserRepository;
 
+	@Autowired
 	public CustomUserDetailsService(ApplicationUserRepository applicationUserRepository) {
 		this.applicationUserRepository = applicationUserRepository;
 	}
