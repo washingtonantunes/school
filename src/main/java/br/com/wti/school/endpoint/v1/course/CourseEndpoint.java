@@ -50,7 +50,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Return a list of courses related to professor", response = Course.class)
 	@GetMapping(path = "list")
 	public ResponseEntity<?> listCourses(@ApiParam("Course name") @RequestParam(value = "name", defaultValue = "") String name) {
-		return endpointUtil.returnObjectOrNotFound(courseRepository.listCourses(name));
+		return new ResponseEntity<>(courseRepository.listCourses(name), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Delete a specific course and return 200 Ok with no body")

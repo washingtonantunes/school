@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import br.com.wti.school.exception.ResourceNotFoundException;
 import br.com.wti.school.persistence.model.ApplicationUser;
 import br.com.wti.school.persistence.model.Professor;
 
@@ -21,11 +22,13 @@ public class EndpointUtil implements Serializable {
 	private static final long serialVersionUID = -4938229304470520703L;
 
 	public ResponseEntity<?> returnObjectOrNotFound(Object object) {
-		return object == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(object, HttpStatus.OK);
+		if (object == null) throw new ResourceNotFoundException("Not found");
+		return new ResponseEntity<>(object, HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> returnObjectOrNotFound(List<?> list) {
-		return list == null || list.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(list, HttpStatus.OK);
+		if (list == null || list.isEmpty()) throw new ResourceNotFoundException("Not found");
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
 	public Professor extractProfessorFromToken(){
