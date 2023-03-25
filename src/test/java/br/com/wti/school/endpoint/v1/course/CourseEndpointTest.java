@@ -1,9 +1,12 @@
 package br.com.wti.school.endpoint.v1.course;
 
-import br.com.wti.school.endpoint.v1.ProfessorEndpointTest;
-import br.com.wti.school.persistence.model.Course;
-import br.com.wti.school.persistence.respository.CourseRepository;
-import br.com.wti.school.persistence.respository.ProfessorRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,16 +16,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Collections;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import br.com.wti.school.endpoint.v1.ProfessorEndpointTest;
+import br.com.wti.school.persistence.model.Course;
+import br.com.wti.school.persistence.respository.CourseRepository;
+import br.com.wti.school.persistence.respository.ProfessorRepository;
 
 /**
  * @author Washington Antunes for wTI on 22/03/2023.
@@ -86,10 +89,10 @@ public class CourseEndpointTest {
     }
 
     @Test
-    public void listAllCoursesWhenNameDoesNotExistsShouldReturn404() throws Exception {
-        ResponseEntity<String> exchange = testRestTemplate.exchange("/v1/professor/course/list?name=xaxa", GET,
-                professorHeader, String.class);
-        assertThat(exchange.getStatusCodeValue()).isEqualTo(404);
+    public void listAllCoursesWhenNameDoesNotExistsShouldReturn() throws Exception {
+        ResponseEntity<List<Course>> exchange = testRestTemplate.exchange("/v1/professor/course/list?name=xaxa", GET,
+                professorHeader, new ParameterizedTypeReference<List<Course>>() {});
+        assertThat(exchange.getBody()).isEmpty();
     }
 
     @Test
