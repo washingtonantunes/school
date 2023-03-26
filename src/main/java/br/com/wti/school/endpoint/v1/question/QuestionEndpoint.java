@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Question;
+import br.com.wti.school.persistence.respository.CourseRepository;
 import br.com.wti.school.persistence.respository.QuestionRepository;
 import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
@@ -33,14 +34,17 @@ import io.swagger.annotations.ApiParam;
 public class QuestionEndpoint {
 
 	private final QuestionRepository questionRepository;
+	private final CourseRepository courseRepository;
     private final GenericService service;
     private final EndpointUtil endpointUtil;
     
     @Autowired
     public QuestionEndpoint(QuestionRepository questionRepository,
+    						CourseRepository courseRepository,
     						GenericService service,
                             EndpointUtil endpointUtil) {
         this.questionRepository = questionRepository;
+        this.courseRepository = courseRepository;
         this.service = service;
         this.endpointUtil = endpointUtil;
     }
@@ -76,6 +80,7 @@ public class QuestionEndpoint {
     @ApiOperation(value = "Create question and return the question created")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody Question question) {
+    	service.throwResourceNotFoundIfDoesNotExist(question.getCourse(), courseRepository, "Course not found");
         question.setProfessor(endpointUtil.extractProfessorFromToken());
         return new ResponseEntity<>(questionRepository.save(question), OK);
     }
