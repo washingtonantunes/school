@@ -1,5 +1,7 @@
 package br.com.wti.school.endpoint.v1.course;
 
+import static org.springframework.http.HttpStatus.OK;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Course;
 import br.com.wti.school.persistence.respository.CourseRepository;
 import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Washington Antunes for wTI on 22/03/23.
@@ -32,13 +33,13 @@ import static org.springframework.http.HttpStatus.OK;
 public class CourseEndpoint {
 
 	private final CourseRepository courseRepository;
-	private final CourseService courseService;
+	private final GenericService service;
 	private final EndpointUtil endpointUtil;
 
 	@Autowired
-	public CourseEndpoint(CourseRepository courseRepository, CourseService courseService, EndpointUtil endpointUtil) {
+	public CourseEndpoint(CourseRepository courseRepository, GenericService service, EndpointUtil endpointUtil) {
 		this.courseRepository = courseRepository;
-		this.courseService = courseService;
+		this.service = service;
 		this.endpointUtil = endpointUtil;
 	}
 
@@ -57,7 +58,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Delete a specific course and return 200 Ok with no body")
 	@DeleteMapping(path = "{id}")
 	public ResponseEntity<?> delete(@PathVariable long id) {
-		courseService.throwResourceNotFoundIfCourseDoesNotExist(id);
+		service.throwResourceNotFoundIfDoesNotExist(id, courseRepository, "Course not found");
 		courseRepository.delete(id);
 		return new ResponseEntity<>(OK);
 	}
@@ -65,7 +66,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Update course and return 200 Ok with no body")
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody Course course) {
-        courseService.throwResourceNotFoundIfCourseDoesNotExist(course);
+		service.throwResourceNotFoundIfDoesNotExist(course, courseRepository, "Course not found");
         courseRepository.save(course);
         return new ResponseEntity<>(OK);
     }

@@ -1,5 +1,7 @@
 package br.com.wti.school.endpoint.v1.question;
 
+import static org.springframework.http.HttpStatus.OK;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Question;
 import br.com.wti.school.persistence.respository.QuestionRepository;
 import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Washington Antunes for wTI on 25/03/2023.
@@ -32,15 +33,15 @@ import static org.springframework.http.HttpStatus.OK;
 public class QuestionEndpoint {
 
 	private final QuestionRepository questionRepository;
-    private final QuestionService questionService;
+    private final GenericService service;
     private final EndpointUtil endpointUtil;
     
     @Autowired
     public QuestionEndpoint(QuestionRepository questionRepository,
-                            QuestionService questionService,
+    						GenericService service,
                             EndpointUtil endpointUtil) {
         this.questionRepository = questionRepository;
-        this.questionService = questionService;
+        this.service = service;
         this.endpointUtil = endpointUtil;
     }
 
@@ -60,7 +61,7 @@ public class QuestionEndpoint {
     @ApiOperation(value = "Delete a specific question and return 200 Ok with no body")
     @DeleteMapping(path = "{id}")
     public ResponseEntity<?> delete(@PathVariable long id) {
-        questionService.throwResourceNotFoundIfQuestionDoesNotExist(id);
+    	service.throwResourceNotFoundIfDoesNotExist(id, questionRepository, "Question not found");
         questionRepository.delete(id);
         return new ResponseEntity<>(OK);
     }
@@ -68,7 +69,7 @@ public class QuestionEndpoint {
     @ApiOperation(value = "Update question and return 200 Ok with no body")
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody Question question) {
-        questionService.throwResourceNotFoundIfQuestionDoesNotExist(question);
+    	service.throwResourceNotFoundIfDoesNotExist(question, questionRepository, "Question not found");
         questionRepository.save(question);
         return new ResponseEntity<>(OK);
     }
