@@ -66,11 +66,11 @@ public class QuestionEndpoint {
         return new ResponseEntity<>(questionRepository.listQuestionsByCourseAndTitle(courseId, title), OK);
     }
 
-    @ApiOperation(value = "Delete a specific question all related choices and return 200 Ok with no body")
+    @ApiOperation(value = "Delete a specific question and all related choices and return 200 Ok with no body")
     @DeleteMapping(path = "{id}")
     @Transactional
     public ResponseEntity<?> delete(@PathVariable long id) {
-    	validateQuestionExistenceOnDB(id, questionRepository);
+    	validateQuestionExistenceOnDB(id);
     	deleteService.cascadeDeleteQuestionAndChoice(id);
         return new ResponseEntity<>(OK);
     }
@@ -78,7 +78,7 @@ public class QuestionEndpoint {
     @ApiOperation(value = "Update question and return 200 Ok with no body")
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody Question question) {
-    	validateQuestionExistenceOnDB(question.getId(), questionRepository);
+    	validateQuestionExistenceOnDB(question.getId());
         questionRepository.save(question);
         return new ResponseEntity<>(OK);
     }
@@ -91,7 +91,7 @@ public class QuestionEndpoint {
         return new ResponseEntity<>(questionRepository.save(question), OK);
     }
     
-    private void validateQuestionExistenceOnDB(Long id, QuestionRepository questionRepository) {
+    private void validateQuestionExistenceOnDB(Long id) {
         service.throwResourceNotFoundIfDoesNotExist(id, questionRepository, "Question not found");
     }
 }

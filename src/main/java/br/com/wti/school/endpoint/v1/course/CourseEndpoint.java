@@ -21,7 +21,6 @@ import br.com.wti.school.endpoint.v1.deleteservice.CascadeDeleteService;
 import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Course;
 import br.com.wti.school.persistence.respository.CourseRepository;
-import br.com.wti.school.persistence.respository.QuestionRepository;
 import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +41,6 @@ public class CourseEndpoint {
 
 	@Autowired
 	public CourseEndpoint(CourseRepository courseRepository, 
-			QuestionRepository questionRepository,
 			GenericService service, 
 			CascadeDeleteService deleteService,
 			EndpointUtil endpointUtil) {
@@ -69,7 +67,7 @@ public class CourseEndpoint {
 	@DeleteMapping(path = "{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable long id) {
-		validateCourseExistenceOnDB(id, courseRepository);
+		validateCourseExistenceOnDB(id);
 		deleteService.cascadeDeleteCourseQuestionAndChoice(id);
 		return new ResponseEntity<>(OK);
 	}
@@ -77,7 +75,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Update course and return 200 Ok with no body")
 	@PutMapping
 	public ResponseEntity<?> update(@Valid @RequestBody Course course) {
-		validateCourseExistenceOnDB(course.getId(), courseRepository);
+		validateCourseExistenceOnDB(course.getId());
 		courseRepository.save(course);
 		return new ResponseEntity<>(OK);
 	}
@@ -89,7 +87,7 @@ public class CourseEndpoint {
 		return new ResponseEntity<>(courseRepository.save(course), OK);
 	}
 	
-	private void validateCourseExistenceOnDB(Long id, CourseRepository courseRepository) {
+	private void validateCourseExistenceOnDB(Long id) {
         service.throwResourceNotFoundIfDoesNotExist(id, courseRepository, "Course not found");
     }
 }
