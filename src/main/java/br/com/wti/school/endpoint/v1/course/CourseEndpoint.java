@@ -67,7 +67,7 @@ public class CourseEndpoint {
 	@DeleteMapping(path = "{id}")
 	@Transactional
 	public ResponseEntity<?> delete(@PathVariable long id) {
-		service.throwResourceNotFoundIfDoesNotExist(id, courseRepository, "Course not found");
+		validateCourseExistenceOnDB(id, courseRepository);
 		courseRepository.delete(id);
 		questionRepository.deleteAllQuestionsRelatedToCourse(id);
 		return new ResponseEntity<>(OK);
@@ -76,7 +76,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Update course and return 200 Ok with no body")
 	@PutMapping
 	public ResponseEntity<?> update(@Valid @RequestBody Course course) {
-		service.throwResourceNotFoundIfDoesNotExist(course, courseRepository, "Course not found");
+		validateCourseExistenceOnDB(course.getId(), courseRepository);
 		courseRepository.save(course);
 		return new ResponseEntity<>(OK);
 	}
@@ -87,4 +87,8 @@ public class CourseEndpoint {
 		course.setProfessor(endpointUtil.extractProfessorFromToken());
 		return new ResponseEntity<>(courseRepository.save(course), OK);
 	}
+	
+	private void validateCourseExistenceOnDB(Long id, CourseRepository courseRepository) {
+        service.throwResourceNotFoundIfDoesNotExist(id, courseRepository, "Course not found");
+    }
 }
