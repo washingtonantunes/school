@@ -1,5 +1,6 @@
 package br.com.wti.school.persistence.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -25,7 +26,8 @@ public class Choice extends AbstractEntity {
 	private String title;
 	@NotNull(message = "The field correctAnswer must be true or false")
 	@ApiModelProperty(notes = "Correct answer for the associated question, you can have only one correct answer per question")
-	private boolean correctAnswer;
+	@Column(columnDefinition = "boolean default false", nullable = false)
+    private boolean correctAnswer = false;
 	@ManyToOne(optional = false)
 	private Question question;
 	@ManyToOne(optional = false)
