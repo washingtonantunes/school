@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.wti.school.endpoint.v1.deleteservice.CascadeDeleteService;
 import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Question;
 import br.com.wti.school.persistence.respository.CourseRepository;
@@ -36,16 +38,19 @@ public class QuestionEndpoint {
 	private final QuestionRepository questionRepository;
 	private final CourseRepository courseRepository;
     private final GenericService service;
+    private final CascadeDeleteService deleteService;
     private final EndpointUtil endpointUtil;
     
     @Autowired
     public QuestionEndpoint(QuestionRepository questionRepository,
     						CourseRepository courseRepository,
     						GenericService service,
+    						CascadeDeleteService deleteService,
                             EndpointUtil endpointUtil) {
         this.questionRepository = questionRepository;
         this.courseRepository = courseRepository;
         this.service = service;
+        this.deleteService = deleteService;
         this.endpointUtil = endpointUtil;
     }
 
@@ -61,11 +66,12 @@ public class QuestionEndpoint {
         return new ResponseEntity<>(questionRepository.listQuestionsByCourseAndTitle(courseId, title), OK);
     }
 
-    @ApiOperation(value = "Delete a specific question and return 200 Ok with no body")
+    @ApiOperation(value = "Delete a specific question all related choices and return 200 Ok with no body")
     @DeleteMapping(path = "{id}")
+    @Transactional
     public ResponseEntity<?> delete(@PathVariable long id) {
     	validateQuestionExistenceOnDB(id, questionRepository);
-        questionRepository.delete(id);
+    	deleteService.cascadeDeleteQuestionAndChoice(id);
         return new ResponseEntity<>(OK);
     }
 
