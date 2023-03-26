@@ -3,6 +3,7 @@ package br.com.wti.school.endpoint.v1.question;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.DELETE;
 
 import java.util.Collections;
 import java.util.List;
@@ -122,7 +123,7 @@ public class QuestionEndpointTest {
     public void deleteQuestionWhenIdExistsShouldReturn200() throws Exception {
         long id = 1L;
         BDDMockito.doNothing().when(questionRepository).delete(id);
-        ResponseEntity<String> exchange = testRestTemplate.exchange("/v1/professor/course/question/{id}", GET, professorHeader, String.class, id);
+        ResponseEntity<String> exchange = testRestTemplate.exchange("/v1/professor/course/question/{id}", DELETE, professorHeader, String.class, id);
         assertThat(exchange.getStatusCodeValue()).isEqualTo(200);
     }
 
@@ -130,7 +131,7 @@ public class QuestionEndpointTest {
     public void deleteQuestionWhenIdDoesNotExistsShouldReturn404() throws Exception {
         long id = -1L;
         BDDMockito.doNothing().when(questionRepository).delete(id);
-        ResponseEntity<String> exchange = testRestTemplate.exchange("/v1/professor/course/question/{id}", GET, professorHeader, String.class, id);
+        ResponseEntity<String> exchange = testRestTemplate.exchange("/v1/professor/course/question/{id}", DELETE, professorHeader, String.class, id);
         assertThat(exchange.getStatusCodeValue()).isEqualTo(404);
     }
 
@@ -142,7 +143,7 @@ public class QuestionEndpointTest {
     }
     
     @Test
-    public void createQuestionWhenCourseDoesNotExistsShouldReturn403() throws Exception {
+    public void createQuestionWhenCourseDoesNotExistsShouldReturn404() throws Exception {
         Question question = questionRepository.findOne(1L);
         question.setCourse(new Course());
         assertThat(createQuestion(question).getStatusCodeValue()).isEqualTo(404);
