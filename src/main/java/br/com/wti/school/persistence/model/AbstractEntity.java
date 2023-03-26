@@ -2,6 +2,7 @@ package br.com.wti.school.persistence.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,4 +22,7 @@ public class AbstractEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
+	
+	@Column(columnDefinition = "boolean default true")
+    private boolean enabled = true;
 }
