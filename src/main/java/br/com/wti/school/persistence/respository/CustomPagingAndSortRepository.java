@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wti.school.persistence.model.AbstractEntity;
 
+/**
+ * @author Washington Antunes for wTI on 25/03/2023.
+ */
 @NoRepositoryBean
 public interface CustomPagingAndSortRepository<T extends AbstractEntity, ID extends Long> extends PagingAndSortingRepository<T, ID> {
 

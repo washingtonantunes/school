@@ -3,7 +3,6 @@ package br.com.wti.school.endpoint.v1.course;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +20,8 @@ import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Washington Antunes for wTI on 22/03/23.
@@ -50,7 +51,7 @@ public class CourseEndpoint {
 	@ApiOperation(value = "Return a list of courses related to professor", response = Course.class)
 	@GetMapping(path = "list")
 	public ResponseEntity<?> listCourses(@ApiParam("Course name") @RequestParam(value = "name", defaultValue = "") String name) {
-		return new ResponseEntity<>(courseRepository.listCourses(name), HttpStatus.OK);
+		return new ResponseEntity<>(courseRepository.listCoursesByName(name), OK);
 	}
 
 	@ApiOperation(value = "Delete a specific course and return 200 Ok with no body")
@@ -58,7 +59,7 @@ public class CourseEndpoint {
 	public ResponseEntity<?> delete(@PathVariable long id) {
 		courseService.throwResourceNotFoundIfCourseDoesNotExist(id);
 		courseRepository.delete(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(OK);
 	}
 	
 	@ApiOperation(value = "Update course and return 200 Ok with no body")
@@ -66,13 +67,13 @@ public class CourseEndpoint {
     public ResponseEntity<?> update(@Valid @RequestBody Course course) {
         courseService.throwResourceNotFoundIfCourseDoesNotExist(course);
         courseRepository.save(course);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 	
 	@ApiOperation(value = "Create course and return the course created")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody Course course) {
         course.setProfessor(endpointUtil.extractProfessorFromToken());
-        return new ResponseEntity<>(courseRepository.save(course),HttpStatus.OK);
+        return new ResponseEntity<>(courseRepository.save(course), OK);
     }
 }
