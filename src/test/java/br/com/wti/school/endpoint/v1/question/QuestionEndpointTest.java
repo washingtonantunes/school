@@ -1,6 +1,8 @@
 package br.com.wti.school.endpoint.v1.question;
 
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,12 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.wti.school.endpoint.v1.ProfessorEndpointTest;
 import br.com.wti.school.endpoint.v1.course.CourseEndpointTest;
+import br.com.wti.school.persistence.model.Course;
 import br.com.wti.school.persistence.model.Question;
 import br.com.wti.school.persistence.respository.QuestionRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
 /**
  * @author Washington Antunes for wTI on 25/03/2023.
@@ -140,6 +139,13 @@ public class QuestionEndpointTest {
         Question question = questionRepository.findOne(1L);
         question.setTitle(null);
         assertThat(createQuestion(question).getStatusCodeValue()).isEqualTo(400);
+    }
+    
+    @Test
+    public void createQuestionWhenCourseDoesNotExistsShouldReturn403() throws Exception {
+        Question question = questionRepository.findOne(1L);
+        question.setCourse(new Course());
+        assertThat(createQuestion(question).getStatusCodeValue()).isEqualTo(404);
     }
 
     @Test
