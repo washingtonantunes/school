@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiParam;
  * @author Washington Antunes for wTI on 25/03/2023.
  */
 @RestController
-@RequestMapping("v1/professor/question/question")
+@RequestMapping("v1/professor/course/question")
 @Api(description = "Operations related to courses' question")
 public class QuestionEndpoint {
 
@@ -52,10 +52,9 @@ public class QuestionEndpoint {
     }
 
     @ApiOperation(value = "Return a list of question related to course", response = Question.class)
-    @GetMapping(path = "list")
-    public ResponseEntity<?> listQuestions(@ApiParam("Course id") @RequestParam(value = "courseId") long courseId,
-                                           @ApiParam("Question title") @RequestParam(value = "title", defaultValue = "") String name) {
-        return new ResponseEntity<>(questionRepository.listQuestionsByCourseAndTitle(courseId, name), OK);
+    @GetMapping(path = "list/{courseId}/")
+    public ResponseEntity<?> listQuestions(@PathVariable long courseId, @ApiParam("Question title") @RequestParam(value = "title", defaultValue = "") String title) {
+        return new ResponseEntity<>(questionRepository.listQuestionsByCourseAndTitle(courseId, title), OK);
     }
 
     @ApiOperation(value = "Delete a specific question and return 200 Ok with no body")
