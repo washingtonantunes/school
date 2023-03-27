@@ -1,5 +1,7 @@
 package br.com.wti.school.endpoint.v1.assignment;
 
+import static org.springframework.http.HttpStatus.OK;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.wti.school.endpoint.v1.deleteservice.CascadeDeleteService;
 import br.com.wti.school.endpoint.v1.genericservice.GenericService;
 import br.com.wti.school.persistence.model.Assignment;
 import br.com.wti.school.persistence.respository.AssignmentRepository;
@@ -23,8 +26,6 @@ import br.com.wti.school.util.EndpointUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Washington Antunes for wTI on 26/03/23.
@@ -38,15 +39,18 @@ public class AssignmentEndpoint {
     private final CourseRepository courseRepository;
     private final GenericService service;
     private final EndpointUtil endpointUtil;
+    private final CascadeDeleteService deleteService;
 
     @Autowired
     public AssignmentEndpoint(AssignmentRepository assignmentRepository,
                               CourseRepository courseRepository, GenericService service,
-                              EndpointUtil endpointUtil) {
+                              EndpointUtil endpointUtil,
+                              CascadeDeleteService deleteService) {
         this.assignmentRepository = assignmentRepository;
         this.courseRepository = courseRepository;
         this.service = service;
         this.endpointUtil = endpointUtil;
+        this.deleteService = deleteService;
     }
 
     @ApiOperation(value = "Return an assignment based on it's id", response = Assignment.class)
@@ -68,6 +72,7 @@ public class AssignmentEndpoint {
     public ResponseEntity<?> delete(@PathVariable long id) {
         validateAssignmentExistenceOnDB(id);
         assignmentRepository.delete(id);
+        deleteService.deleteAssignmentAndAllRelatedEntities(id);
         return new ResponseEntity<>(OK);
     }
 
