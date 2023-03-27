@@ -54,13 +54,13 @@ public class QuestionAssignmentEndpoint {
 	@ApiOperation(value = "Return valid questions for that course (valid questions are questions with at least two choices"
 			+ " and one of the choices is correct and it is not already associated with that assignment)", response = Question[].class)
 	@GetMapping(path = "{courseId}/{assignmentId}")
-	public ResponseEntity<?> getQuestionById(@PathVariable long courseId, @PathVariable long assignmentId) {
+	public ResponseEntity<?> listValidQuestionsForAnAssignment(@PathVariable long courseId, @PathVariable long assignmentId) {
 		List<Question> questions = questionRepository.listQuestionsByCourseNotAssociatedWithAnAssignment(courseId,
 				assignmentId);
 		List<Question> validQuestions = questions.stream()
 				.filter(question -> hasMoreThanOneChoice(question) && hasOnlyOneCorrectAnswer(question))
 				.collect(Collectors.toList());
-		return endpointUtil.returnObjectOrNotFound(validQuestions);
+		return new ResponseEntity<>(validQuestions, OK);
 	}
 
 	private boolean hasOnlyOneCorrectAnswer(Question question) {
@@ -68,7 +68,7 @@ public class QuestionAssignmentEndpoint {
 	}
 
 	private boolean hasMoreThanOneChoice(Question question) {
-		return question.getChoices().size() > 1;
+		return question.getChoices() != null && question.getChoices().size() > 1;
 	}
 
 	@ApiOperation(value = "Associate a question to an assignment and return the QuestionAssignment created", response = QuestionAssignment[].class)
