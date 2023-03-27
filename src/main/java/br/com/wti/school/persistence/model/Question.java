@@ -1,9 +1,15 @@
 package br.com.wti.school.persistence.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -26,6 +32,9 @@ public class Question extends AbstractEntity {
 	private Course course;
 	@ManyToOne(optional = false)
 	private Professor professor;
+	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Choice> choices;
 
 	public static final class Builder {
 		private Question question;
