@@ -16,7 +16,7 @@ public class SchoolApplication {
 	}
 
 	@Bean
-	public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+	SecurityEvaluationContextExtension securityEvaluationContextExtension() {
 		return new SecurityEvaluationContextExtension();
 	}
 	
